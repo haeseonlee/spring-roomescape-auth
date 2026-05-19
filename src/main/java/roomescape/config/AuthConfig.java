@@ -26,7 +26,8 @@ public class AuthConfig implements WebMvcConfigurer {
                 .addPathPatterns("/reservations/mine");
 
         registry.addInterceptor(new AdminCheckInterceptor(memberQueryingDao))
-                .addPathPatterns("/admin/**");
+                .addPathPatterns("/admin/**")
+                .excludePathPatterns("/admin/times", "/admin/times/**", "/admin/themes", "/admin/themes/**");
     }
 
     @Override
