@@ -23,9 +23,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequest loginReq, HttpSession session) {
+    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest loginReq, HttpSession session) {
         authService.login(loginReq, session);
-        return ResponseEntity.ok().build();
+        String token = authService.loginWithToken(loginReq);
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
     @GetMapping("/login/check")
