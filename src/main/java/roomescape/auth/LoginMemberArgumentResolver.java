@@ -16,9 +16,11 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     private static final String LOGIN_MEMBER_ID = "loginMemberId";
 
     private final MemberQueryingDao memberQueryingDao;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public LoginMemberArgumentResolver(MemberQueryingDao memberQueryingDao) {
+    public LoginMemberArgumentResolver(MemberQueryingDao memberQueryingDao, JwtTokenProvider jwtTokenProvider) {
         this.memberQueryingDao = memberQueryingDao;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -31,18 +33,23 @@ public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolve
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
                                   NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
+
+        // 세션 확인
         HttpSession session = request.getSession(false);
-
-        if (session == null) {
-            throw new AuthenticationException();
+        if (session != null && session.getAttribute(LOGIN_MEMBER_ID) != null) {
+            Long memberId = (Long)  session.getAttribute(LOGIN_MEMBER_ID);
+            return memberQueryingDao.findById(memberId)
+                    .orElseThrow(AuthenticationException::new);
         }
 
-        Long memberId = (Long) session.getAttribute(LOGIN_MEMBER_ID);
-        if (memberId == null) {
-            throw new AuthenticationException();
+        // Authorization 헤더 확인 (모바일)
+        String authorization = request.getHeader("Authorization");
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            Long memberId = jwtTokenProvider.getMemberId(authorization.substring(7));
+            return memberQueryingDao.findById(memberId)
+                    .orElseThrow(AuthenticationException::new);
         }
 
-        return memberQueryingDao.findById(memberId)
-                .orElseThrow(AuthenticationException::new);
+        throw new  AuthenticationException();
     }
 }
