@@ -25,7 +25,7 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckInterceptor())
+        registry.addInterceptor(new LoginCheckInterceptor(jwtTokenProvider))
                 .addPathPatterns("/reservations/mine");
 
         registry.addInterceptor(new AdminCheckInterceptor(memberQueryingDao))
