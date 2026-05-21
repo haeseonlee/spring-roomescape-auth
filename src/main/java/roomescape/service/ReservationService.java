@@ -93,7 +93,7 @@ public class ReservationService {
         Reservation existedReservation = reservationQueryingDao.findReservationById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));
 
-        if (!member.isAdmin() && !member.isManagerOf(existedReservation.getTheme().getId())) {
+        if (!member.isAdmin() && !member.isManagerOf(existedReservation.getTheme().getStoreId())) {
             throw new AuthorizationException();
         }
 
@@ -121,7 +121,7 @@ public class ReservationService {
         Reservation reservation = reservationQueryingDao.findReservationById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));
 
-        if (!member.isAdmin() && !member.isManagerOf(reservation.getTheme().getId())) {
+        if (!member.isAdmin() && !member.isManagerOf(reservation.getTheme().getStoreId())) {
             throw new AuthorizationException();
         }
 

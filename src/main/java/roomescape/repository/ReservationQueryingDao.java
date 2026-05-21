@@ -33,7 +33,8 @@ public class ReservationQueryingDao {
                 resultSet.getLong("theme_id"),
                 resultSet.getString("theme_name"),
                 resultSet.getString("theme_description"),
-                resultSet.getString("theme_url")
+                resultSet.getString("theme_url"),
+                resultSet.getObject("theme_store_id", Long.class)
         );
 
         return new Reservation(
@@ -49,7 +50,7 @@ public class ReservationQueryingDao {
 
     public Optional<Reservation> findReservationById(long id) {
         String sql = """
-                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url
+                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url, th.store_id as theme_store_id
                 from reservation as r
                 inner join reservation_time as t on r.time_id = t.id
                 inner join theme as th on th.id = r.theme_id
@@ -65,7 +66,7 @@ public class ReservationQueryingDao {
 
     public List<Reservation> findAllReservations() {
         String sql = """
-                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url
+                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url, th.store_id as theme_store_id
                 from reservation as r
                 inner join reservation_time as t on r.time_id = t.id
                 inner join theme as th on th.id = r.theme_id
@@ -75,7 +76,7 @@ public class ReservationQueryingDao {
 
     public List<Reservation> findAllByName(String name) {
         String sql = """
-                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url
+                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url, th.store_id as theme_store_id
                 from reservation as r
                 inner join reservation_time as t on r.time_id = t.id
                 inner join theme as th on th.id = r.theme_id
@@ -86,7 +87,7 @@ public class ReservationQueryingDao {
 
     public Optional<Reservation> findReservationByThemeAndDateAndTime(Long themeId, LocalDate date, Long timeId) {
         String sql = """
-                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url
+                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url, th.store_id as theme_store_id
                 from reservation as r
                 inner join reservation_time as t on r.time_id = t.id
                 inner join theme as th on th.id = r.theme_id
@@ -102,7 +103,7 @@ public class ReservationQueryingDao {
 
     public List<Reservation> findAllMemberId(Long memberId) {
         String sql = """
-                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url
+                select r.id as reservation_id, r.name as reservation_name, r.date as reservation_date, r.time_id, r.member_id, r.created_at as reservation_created_at, t.start_at, th.id as theme_id, th.name as theme_name, th.description as theme_description, th.url as theme_url, th.store_id as theme_store_id
                 from reservation as r
                 inner join reservation_time as t on r.time_id = t.id
                 inner join theme as th on th.id = r.theme_id
