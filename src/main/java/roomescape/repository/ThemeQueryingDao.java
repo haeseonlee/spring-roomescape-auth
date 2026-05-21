@@ -19,19 +19,17 @@ public class ThemeQueryingDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private final RowMapper<Theme> themeRowMapper = (resultSet, rowNum) -> {
-        Theme theme = new Theme(
-                resultSet.getLong("id"),
-                resultSet.getString("name"),
-                resultSet.getString("description"),
-                resultSet.getString("url")
-        );
-        return theme;
-    };
+    private final RowMapper<Theme> themeRowMapper = (resultSet, rowNum) -> new Theme(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("description"),
+            resultSet.getString("url"),
+            resultSet.getObject("store_id", Long.class)
+    );
 
     public Optional<Theme> findThemeById(long id) {
         String sql = """
-                SELECT id, name, description, url
+                SELECT id, name, description, url, store_id
                 FROM theme
                 WHERE id = ?
                 """;
@@ -46,7 +44,7 @@ public class ThemeQueryingDao {
 
     public List<Theme> findAllTheme() {
         String sql = """
-                SELECT id, name, description, url
+                SELECT id, name, description, url, store_id
                 FROM theme
                 """;
         return jdbcTemplate.query(sql, themeRowMapper);
@@ -54,7 +52,7 @@ public class ThemeQueryingDao {
 
     public List<Theme> findAllByTopTheme() {
         String sql = """
-                SELECT t.id, t.name, t.description, t.url
+                SELECT t.id, t.name, t.description, t.url, t.store_id
                 FROM theme as t
                 INNER JOIN (
                     SELECT r.theme_id
