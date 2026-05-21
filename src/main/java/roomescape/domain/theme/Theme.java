@@ -6,6 +6,7 @@ public class Theme {
     private String name;
     private String description;
     private String url;
+    private Long storeId;
 
     public Theme() {
     }
@@ -15,6 +16,14 @@ public class Theme {
         this.name = name;
         this.description = description;
         this.url = url;
+    }
+
+    public Theme(Long id, String name, String description, String url, Long storeId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.url = url;
+        this.storeId = storeId;
     }
 
     public Long getId() {
@@ -31,5 +40,9 @@ public class Theme {
 
     public String getUrl() {
         return url;
+    }
+
+    public Long getStoreId() {
+        return storeId;
     }
 }
