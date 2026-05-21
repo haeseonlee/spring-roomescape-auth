@@ -6,6 +6,7 @@ public class Member {
     private String email;
     private String password;
     private String role;
+    private Long themeId;
 
     public Member(Long id, String name, String email, String password) {
         this.id = id;
@@ -22,8 +23,21 @@ public class Member {
         this.role = role;
     }
 
+    public Member(Long id, String name, String email, String password, String role, Long themeId) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.themeId = themeId;
+    }
+
     public boolean isAdmin() {
         return "ADMIN".equals(role);
+    }
+
+    public boolean isManagerOf(Long themeId) {
+        return this.themeId != null && this.themeId.equals(themeId);
     }
 
     public Long getId() {
@@ -44,5 +58,9 @@ public class Member {
 
     public String getRole() {
         return role;
+    }
+
+    public Long getThemeId() {
+        return themeId;
     }
 }
