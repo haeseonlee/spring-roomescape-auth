@@ -23,7 +23,7 @@ public class UserReservationTest {
     private JdbcTemplate jdbcTemplate;
 
     private String login() {
-        jdbcTemplate.update("INSERT INTO member (name, email, password) VALUES (?, ?, ?)", "브라운", "brown@example.com", "password1");
+        jdbcTemplate.update("INSERT INTO member (name, email, password, role) VALUES (?, ?, ?, ?)", "브라운", "brown@example.com", "password1", "ADMIN");
 
         Map<String, String> loginBody = new HashMap<>();
         loginBody.put("email", "brown@example.com");
@@ -105,6 +105,7 @@ public class UserReservationTest {
 
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionId)
                 .body(update)
                 .when().patch("/reservations/1")
                 .then().log().all()
@@ -156,6 +157,7 @@ public class UserReservationTest {
         Map<String, Object> update = createReservationBody("2026-08-05", 2, 1);
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionId)
                 .body(update)
                 .when().patch("/reservations/1")
                 .then().log().all()
@@ -166,12 +168,15 @@ public class UserReservationTest {
 
     @Test
     void 존재하지_않는_예약_변경시_404를_반환한다() {
+        String sessionId = login();
         createTheme();
         createTime("10:00");
 
         Map<String, Object> update = createReservationBody("2026-08-05", 1, 1);
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON).body(update)
+                .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionId)
+                .body(update)
                 .when().patch("/reservations/999")
                 .then().log().all()
                 .statusCode(404)
@@ -245,7 +250,9 @@ public class UserReservationTest {
 
         Map<String, Object> update = createReservationBody("2020-01-01", 1, 1);
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON).body(update)
+                .contentType(ContentType.JSON)
+                .cookie("JSESSIONID", sessionId)
+                .body(update)
                 .when().patch("/reservations/1")
                 .then().log().all()
                 .statusCode(400)

@@ -54,13 +54,13 @@ class ReservationServiceTest {
 
     @BeforeEach
     void setUp() {
-        jdbcTemplate.update("INSERT INTO member (name, email, password) VALUES (?, ?, ?)", "브라운", "brown@example.com", "password1");
+        jdbcTemplate.update("INSERT INTO member (name, email, password, role) VALUES (?, ?, ?, ?)", "브라운", "brown@example.com", "password1", "ADMIN");
         Long id1 = jdbcTemplate.queryForObject("SELECT id FROM member WHERE email = ?", Long.class, "brown@example.com");
-        testMember = new Member(id1, "브라운", "brown@example.com", "password1");
+        testMember = new Member(id1, "브라운", "brown@example.com", "password1", "ADMIN", null);
 
-        jdbcTemplate.update("INSERT INTO member (name, email, password) VALUES (?, ?, ?)", "네오", "neo@example.com", "password2");
+        jdbcTemplate.update("INSERT INTO member (name, email, password, role) VALUES (?, ?, ?, ?)", "네오", "neo@example.com", "password2", "USER");
         Long id2 = jdbcTemplate.queryForObject("SELECT id FROM member WHERE email = ?", Long.class, "neo@example.com");
-        testMember2 = new Member(id2, "네오", "neo@example.com", "password2");
+        testMember2 = new Member(id2, "네오", "neo@example.com", "password2", "USER", null);
     }
 
     @Test
@@ -145,7 +145,7 @@ class ReservationServiceTest {
 
         Long newTimeId = reservationTimeUpdatingDao.insert(new ReservationTimeRequest(LocalTime.of(11, 0)));
         ReservationRequest newReservationReq = new ReservationRequest(LocalDate.now().plusDays(2), newTimeId, themeId);
-        ReservationResponse updated = reservationService.update(created.getId(), newReservationReq);
+        ReservationResponse updated = reservationService.update(testMember, created.getId(), newReservationReq);
 
         assertThat(updated.getDate()).isEqualTo(LocalDate.now().plusDays(2));
     }
@@ -159,7 +159,7 @@ class ReservationServiceTest {
         Long newTimeId = reservationTimeUpdatingDao.insert(new ReservationTimeRequest(LocalTime.of(11, 0)));
         ReservationRequest newReservationReq = new ReservationRequest(LocalDate.now().minusDays(1), newTimeId, themeId);
 
-        assertThatThrownBy(() -> reservationService.update(created.getId(), newReservationReq))
+        assertThatThrownBy(() -> reservationService.update(testMember, created.getId(), newReservationReq))
                 .isInstanceOf(InvalidReservationException.class);
     }
 
@@ -173,7 +173,7 @@ class ReservationServiceTest {
         reservationService.create(testMember2, new ReservationRequest(LocalDate.now().plusDays(1), timeId2, themeId));
 
         ReservationRequest updated = new ReservationRequest(LocalDate.now().plusDays(1), timeId2, themeId);
-        assertThatThrownBy(() -> reservationService.update(created.getId(), updated))
+        assertThatThrownBy(() -> reservationService.update(testMember, created.getId(), updated))
                 .isInstanceOf(ReservationAlreadyExistException.class);
     }
 
@@ -183,7 +183,7 @@ class ReservationServiceTest {
         Long themeId = themeUpdatingDao.insert(new ThemeRequest("명탐정의 부재", "탐험", "http://example.com"));
         ReservationRequest request = new ReservationRequest(LocalDate.now().plusDays(1), timeId, themeId);
 
-        assertThatThrownBy(() -> reservationService.update(999L, request))
+        assertThatThrownBy(() -> reservationService.update(testMember, 999L, request))
                 .isInstanceOf(ReservationNotFoundException.class);
     }
 }

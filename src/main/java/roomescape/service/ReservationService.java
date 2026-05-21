@@ -7,6 +7,7 @@ import roomescape.domain.reservationtime.ReservationTime;
 import roomescape.domain.theme.Theme;
 import roomescape.dto.reservation.ReservationRequest;
 import roomescape.dto.reservation.ReservationResponse;
+import roomescape.exception.AuthorizationException;
 import roomescape.exception.InvalidReservationException;
 import roomescape.exception.ReservationAlreadyExistException;
 import roomescape.exception.ReservationNotFoundException;
@@ -88,9 +89,14 @@ public class ReservationService {
         return ReservationResponse.from(reservation.withReservationId(generatedId));
     }
 
-    public ReservationResponse update(Long id, ReservationRequest reservationReq) {
+    public ReservationResponse update(Member member, Long id, ReservationRequest reservationReq) {
         Reservation existedReservation = reservationQueryingDao.findReservationById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));
+
+        if (!member.isAdmin() && !member.isManagerOf(existedReservation.getTheme().getId())) {
+            throw new AuthorizationException();
+        }
+
         ReservationTime newTime = reservationTimeQueryingDao.findReservationTimeById(reservationReq.timeId())
                 .orElseThrow(() -> new ReservationTimeNotFoundException(reservationReq.timeId()));
 
@@ -111,9 +117,13 @@ public class ReservationService {
         return ReservationResponse.from(updatedReservation);
     }
 
-    public void delete(Long id) {
+    public void delete(Member member, Long id) {
         Reservation reservation = reservationQueryingDao.findReservationById(id)
                 .orElseThrow(() -> new ReservationNotFoundException(id));
+
+        if (!member.isAdmin() && !member.isManagerOf(reservation.getTheme().getId())) {
+            throw new AuthorizationException();
+        }
 
         if (reservation.getDate().isBefore(LocalDate.now())) {
             throw new InvalidReservationException();

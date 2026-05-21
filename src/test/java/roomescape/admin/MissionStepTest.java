@@ -22,7 +22,7 @@ public class MissionStepTest {
     private JdbcTemplate jdbcTemplate;
 
     private String login() {
-        jdbcTemplate.update("INSERT INTO member (name, email, password) VALUES (?, ?, ?)", "브라운", "brown@example.com", "password1");
+        jdbcTemplate.update("INSERT INTO member (name, email, password, role) VALUES (?, ?, ?, ?)", "브라운", "brown@example.com", "password1", "ADMIN");
 
         Map<String, String> loginBody = new HashMap<>();
         loginBody.put("email", "brown@example.com");
@@ -72,6 +72,7 @@ public class MissionStepTest {
                 .body("size()", is(1));
 
         RestAssured.given().log().all()
+                .cookie("JSESSIONID", sessionId)
                 .when().delete("/reservations/1")
                 .then().log().all()
                 .statusCode(204);

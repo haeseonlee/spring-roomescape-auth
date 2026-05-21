@@ -49,14 +49,14 @@ public class ReservationRestController {
     }
 
     @PatchMapping("/reservations/{id}")
-    public ResponseEntity<ReservationResponse> update(@PathVariable Long id, @RequestBody ReservationRequest reservationReq) {
-        ReservationResponse updatedReservation = reservationService.update(id, reservationReq);
+    public ResponseEntity<ReservationResponse> update(@LoginMember Member member, @PathVariable Long id, @RequestBody ReservationRequest reservationReq) {
+        ReservationResponse updatedReservation = reservationService.update(member, id, reservationReq);
         return ResponseEntity.ok(updatedReservation);
     }
 
     @DeleteMapping("/reservations/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        reservationService.delete(id);
+    public ResponseEntity<Void> delete(@LoginMember Member member, @PathVariable Long id) {
+        reservationService.delete(member, id);
         return ResponseEntity.noContent().build();
     }
 }
