@@ -26,7 +26,9 @@ CREATE TABLE member
     email    VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role     VARCHAR(20)  NOT NULL DEFAULT 'USER',
-    PRIMARY KEY (id)
+    theme_id BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (theme_id) REFERENCES theme (id)
 );
 
 CREATE TABLE reservation

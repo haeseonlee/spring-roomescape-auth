@@ -27,11 +27,11 @@ INSERT INTO theme (name, description, url)
 VALUES ('꿈속의 과자집', '꿈속에서 길을 잃은 당신, 달콤하지만 위험한 과자집의 비밀을 풀어야 합니다.', 'https://example.com/5');
 
 
-INSERT INTO member (name, email, password, role) VALUES ('브라운', 'brown@example.com', 'password1', 'ADMIN');
-INSERT INTO member (name, email, password, role) VALUES ('네오', 'neo@example.com', 'password2', 'USER');
-INSERT INTO member (name, email, password, role) VALUES ('제이슨', 'jason@example.com', 'password3', 'USER');
-INSERT INTO member (name, email, password, role) VALUES ('워니', 'won@example.com', 'password4', 'USER');
-INSERT INTO member (name, email, password, role) VALUES ('포비', 'pobi@example.com', 'password5', 'USER');
+INSERT INTO member (name, email, password, role, theme_id) VALUES ('브라운', 'brown@example.com', 'password1', 'ADMIN', 1);
+INSERT INTO member (name, email, password, role, theme_id) VALUES ('네오', 'neo@example.com', 'password2', 'USER', null);
+INSERT INTO member (name, email, password, role, theme_id) VALUES ('제이슨', 'jason@example.com', 'password3', 'USER', null);
+INSERT INTO member (name, email, password, role, theme_id) VALUES ('워니', 'won@example.com', 'password4', 'USER', null);
+INSERT INTO member (name, email, password, role, theme_id) VALUES ('포비', 'pobi@example.com', 'password5', 'USER', null);
 
 INSERT INTO reservation (name, date, theme_id, time_id, member_id, created_at)
 VALUES ('브라운', '2026-06-01', 1, 1, 1, '2026-05-15 10:30:00');
